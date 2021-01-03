@@ -10,7 +10,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Backpack\CRUD\app\Models\Traits\SpatieTranslatable\HasTranslations;
 use Intervention\Image\ImageManagerStatic;
 
-class Category extends Model
+class Item extends Model
 {
     use HasFactory, HasSlug, CrudTrait, HasTranslations;
 
@@ -29,20 +29,21 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-        'parent_id',
-        'image',
+        'category_id',
+        'images',
         'slug',
         'is_active',
+        'is_digital',
         'show_in_menu'
     ];
 
     protected $translatable = ['name', 'description'];
 
     // Set options for image attributes
-    const DISK = 'public';
-    const FIELD = 'image';
-    const PATH = 'categories';
+    const PATH = 'items';
     const EXT = 'png';
+    const DISK = 'public';
+    const FIELD = 'images';
 
     public static function boot()
     {

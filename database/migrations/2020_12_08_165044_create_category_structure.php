@@ -16,19 +16,21 @@ class CreateCategoryStructure extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
+            $table->text('name');
             $table->string('slug')->unique()->index('slug');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
-
-            $table->integer('parent_id')->unsigned()->default(0)->nullable();
+            $table->boolean('show_in_menu')->default(false);
+            $table->integer('parent_id')->default(0)->nullable();
+            $table->integer('lft')->unsigned()->nullable();
+            $table->integer('rgt')->unsigned()->nullable();
+            $table->integer('depth')->unsigned()->nullable();
 //            $table->foreign('parent_id')
 //                ->references('id')
 //                ->on('categories')
 //                ->onDelete('set null');
 
-            $table->text('image');
-            $table->integer('position')->unsigned()->default(0);
+            $table->text('image')->nullable();
 //            $table->timestamps();
         });
     }
