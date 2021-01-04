@@ -12,7 +12,10 @@ use Intervention\Image\ImageManagerStatic;
 
 class Category extends Model
 {
-    use HasFactory, HasSlug, CrudTrait, HasTranslations;
+    use HasFactory,
+        HasSlug,
+        CrudTrait,
+        HasTranslations;
 
     /**
      * Indicates if the model should be timestamped.

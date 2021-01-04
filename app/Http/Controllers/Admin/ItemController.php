@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
+use App\Http\Requests\ItemRequest;
+use App\Models\Item;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -12,14 +12,14 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class CategoryController extends CrudController
+class ItemController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ReorderOperation;
+//    use \Backpack\CRUD\app\Http\Controllers\Operations\ReorderOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\InlineCreateOperation;
 
     /**
@@ -29,9 +29,9 @@ class CategoryController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(Category::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/category');
-        CRUD::setEntityNameStrings(__('Category'), __('Categories'));
+        CRUD::setModel(Item::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/item');
+        CRUD::setEntityNameStrings(__('Item'), __('Items'));
     }
 
     /**
@@ -54,9 +54,9 @@ class CategoryController extends CrudController
             'label' => 'Заголовок',
         ]);
         $this->crud->addColumn([
-            'name'  => 'parent', // name of relationship method in the model
+            'name'  => 'category', // name of relationship method in the model
             'type'  => 'relationship',
-            'label' => 'Родительская к-ия', // Table column heading
+            'label' => 'Категория', // Table column heading
         ]);
         $this->crud->addColumn([
             'name' => 'is_active',
@@ -65,7 +65,7 @@ class CategoryController extends CrudController
         ]);
 
         if (!$this->crud->getRequest()->has('order')) {
-            $this->crud->orderBy('parent_id', 'ASC')->orderBy('id', 'ASC');
+            $this->crud->orderBy('position', 'ASC')->orderBy('id', 'ASC');
         }
     }
 
@@ -77,7 +77,7 @@ class CategoryController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(CategoryRequest::class);
+        CRUD::setValidation(ItemRequest::class);
 
         $this->crud->addField([
             'name'  => 'name',
@@ -97,32 +97,37 @@ class CategoryController extends CrudController
         ]);
 
         $this->crud->addField([
-            'label' => 'Родитель',
+            'label' => 'Категория',
             'type' => 'select',
-            'name' => 'parent_id',
-            'entity' => 'parent',
+            'name' => 'category_id',
+            'entity' => 'category',
             'attribute' => 'name',
         ]);
 
-        $this->crud->addField([
-            'label' => "Изображение",
-            'name' => "image",
-            'type' => 'image',
-            'crop' => false, // set to true to allow cropping, false to disable
-            'aspect_ratio' => 0, // ommit or set to 0 to allow any aspect ratio
-            'disk'  => 'public', // in case you need to show images from a different disk
-//            'prefix'    => 'uploads/categories' // in case your db value is only the file name (no path), you can use this to prepend your path to the image src (in HTML), before it's shown to the user;
+        $this->crud->addField([   // Upload
+            'name'      => 'images',
+            'label'     => 'Изображения',
+            'type'      => 'upload_multiple',
+            'upload'    => true,
+            'disk'      => 'public', // if you store files in the /public folder, please omit this; if you store them in /storage or S3, please specify it;
+            // optional:
+//            'temporary' => 10 // if using a service, such as S3, that requires you to make temporary URLs this will make a URL that is valid for the number of minutes specified
         ]);
 
+        $this->crud->addField([
+            'name'  => 'position',
+            'type'  => 'number',
+            'label' => 'Позиция',
+        ]);
+        $this->crud->addField([
+            'name'  => 'is_digital',
+            'type'  => 'checkbox',
+            'label' => 'Цифровой товар',
+        ]);
         $this->crud->addField([
             'name'  => 'is_active',
             'type'  => 'checkbox',
             'label' => 'Активно',
-        ]);
-        $this->crud->addField([
-            'name'  => 'show_in_menu',
-            'type'  => 'checkbox',
-            'label' => 'Показывать в меню',
         ]);
 
         /**

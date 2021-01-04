@@ -29,5 +29,9 @@
             <a class="nav-link" href="{{ backpack_url('category') }}"><i class="nav-icon la la-sitemap"></i>
                 <span>Категории</span></a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ backpack_url('item') }}"><i class="nav-icon la la-shopping-basket"></i>
+                <span>Товары</span></a>
+        </li>
     </ul>
 </li>

@@ -20,11 +20,8 @@ class CreateItemsTable extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_digital')->default(false);
-            $table->integer('category_id')->default(0)->nullable();
-            $table->foreign('category_id')
-                ->references('id')
-                ->on('categories')
-                ->onDelete('set null');
+            $table->unsignedInteger('category_id')->nullable()
+                ->references('id')->on('categories');
             $table->integer('position')->default(0)->nullable();
             $table->text('images')->nullable();
             $table->timestamps();
